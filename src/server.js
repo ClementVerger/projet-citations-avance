@@ -1,25 +1,21 @@
+// src/server.js
 const express = require('express');
 const path = require('path');
-const fetch = require('node-fetch'); // v2
+const getCitation = require('./api'); // ⚠️ on réutilise ton module
+
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // 1. Servir les fichiers statiques (front)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 2. Route API backend → appelle ZenQuotes côté serveur
+// 2. Route API backend → appelle ZenQuotes via getCitation()
 app.get('/api/citation', async (req, res) => {
   try {
-    const response = await fetch('https://zenquotes.io/api/random');
-    if (!response.ok) {
-      return res.status(500).json({ error: 'Erreur API externe' });
-    }
-
-    const data = await response.json();
-    const citation = `${data[0].q} - ${data[0].a}`;
-    res.json({ citation });
+    const citation = await getCitation();      // string "texte - auteur"
+    res.json({ citation });                    // on renvoie du JSON propre
   } catch (err) {
-    console.error(err);
+    console.error('Erreur /api/citation :', err);
     res.status(500).json({ error: 'Erreur serveur' });
   }
 });
