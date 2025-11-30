@@ -1,26 +1,44 @@
-// src/public/script.js
 async function chargerCitation() {
+  const bloc = document.getElementById('citation');
+
+  // 1️⃣ D'abord tenter ton backend Express local
   try {
-    const response = await fetch('/api/citation');   // 👉 appel vers TON serveur
+    const response = await fetch('/api/citation');
+
+    // Si le backend répond 404 ou autre → on passe au catch
     if (!response.ok) {
-      throw new Error(`Erreur HTTP ${response.status}`);
+      throw new Error('Backend non disponible');
     }
 
-    const data = await response.json();
-    document.getElementById('citation').innerText = data.citation;
-  } catch (error) {
-    console.error('Erreur lors du chargement de la citation :', error);
-    document.getElementById('citation').innerText =
-      'Erreur lors du chargement de la citation.';
+    const data = await response.json();        // { citation: "... - ..." }
+    if (data && data.citation) {
+      bloc.innerText = data.citation;
+      return;  // ⬅️ FIN si ton backend fonctionne
+    }
+
+    throw new Error('Réponse inattendue du backend');
+  }
+
+  // 2️⃣ Si ton serveur Express n'est PAS disponible (ex: GitHub Pages)
+  catch (err) {
+    console.warn("Backend indisponible → fallback ZenQuotes", err);
+
+    try {
+      // Appel direct à ZenQuotes
+      const response = await fetch('https://zenquotes.io/api/random');
+      if (!response.ok) {
+        throw new Error('ZenQuotes indisponible');
+      }
+
+      const data = await response.json();   // [ { q: "...", a: "..." } ]
+      bloc.innerText = `${data[0].q} - ${data[0].a}`;
+    } catch (err2) {
+      // Double échec : backend + ZenQuotes
+      console.error("Impossible de charger une citation :", err2);
+      bloc.innerText = "Impossible de charger une citation.";
+    }
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const btn = document.getElementById('nouvelle');
-  if (btn) {
-    btn.addEventListener('click', chargerCitation);
-  }
-
-  // première citation au chargement
-  chargerCitation();
-});
+document.getElementById('nouvelle').addEventListener('click', chargerCitation);
+window.addEventListener('load', chargerCitation);
