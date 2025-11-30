@@ -1,0 +1,29 @@
+{
+  "name": "projet-citations-avance",
+  "version": "1.0.0",
+  "description": "Projet avancé de gestion de citations avec API externe",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ClementVerger/projet-citations-avance.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ClementVerger/projet-citations-avance/issues"
+  },
+  "homepage": "https://github.com/ClementVerger/projet-citations-avance#readme",
+  "devDependencies": {
+    "jest": "^30.2.0"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "node-fetch": "^2.7.0"
+  }
+}
