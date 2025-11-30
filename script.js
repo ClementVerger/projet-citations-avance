@@ -1,8 +1,26 @@
+// src/public/script.js
 async function chargerCitation() {
-    const response = await fetch('https://zenquotes.io/api/random');
+  try {
+    const response = await fetch('/api/citation');   // 👉 appel vers TON serveur
+    if (!response.ok) {
+      throw new Error(`Erreur HTTP ${response.status}`);
+    }
+
     const data = await response.json();
-    document.getElementById('citation').innerText = `${data[0].q} - ${data[0].a}`;
+    document.getElementById('citation').innerText = data.citation;
+  } catch (error) {
+    console.error('Erreur lors du chargement de la citation :', error);
+    document.getElementById('citation').innerText =
+      'Erreur lors du chargement de la citation.';
+  }
 }
 
-document.getElementById('nouvelle').addEventListener('click', chargerCitation);
-window.onload = chargerCitation;
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('nouvelle');
+  if (btn) {
+    btn.addEventListener('click', chargerCitation);
+  }
+
+  // première citation au chargement
+  chargerCitation();
+});
