@@ -1,7 +1,7 @@
 // src/server.js
 const express = require('express');
 const path = require('path');
-const getCitation = require('./api'); // ⚠️ on réutilise ton module
+const getCitation = require('./api'); // getCitation est une fonction
 
 const app = express();
 const PORT = process.env.PORT || 3000;
